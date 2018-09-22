@@ -121,11 +121,10 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
                           rookX: Int, rookY: Int,
                           bishopX: Int, bishopY: Int): Int {
     val rook = ((kingX == rookX) or (kingY == rookY))
-    val bishopPlus = ((bishopX + bishopY) == (kingX + kingY)) // находится ли король на диагонали kx+b, где k=1
-    val bishopMinus = (abs(bishopX - bishopY) == abs(kingX - kingY)) // соответственно, диагональ при k=-1
-    if (rook and (bishopPlus or bishopMinus)) return 3
+    val bishop = (abs(kingX - bishopX) == abs(kingY - bishopY))
+    if (rook and bishop) return 3
     if (rook) return 1
-    if (bishopPlus or bishopMinus) return 2
+    if (bishop) return 2
     return 0
 }
 
