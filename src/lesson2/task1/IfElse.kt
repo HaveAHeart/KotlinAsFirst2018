@@ -1,4 +1,5 @@
 @file:Suppress("UNUSED_PARAMETER")
+
 package lesson2.task1
 
 import lesson1.task1.discriminant
@@ -65,11 +66,14 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
 fun ageDescription(age: Int): String {
-    if ((age % 100 >= 11) and (age % 100 <= 19)) return age.toString() + " лет"
-    if ((age % 10 == 0) or ((age % 10 >= 5) and (age % 10 <= 9))) return age.toString() + " лет"
-    if (age % 10 == 1) return age.toString() + " год"
-    return age.toString() + " года"
+    return when {
+        age % 100 in 11..19 -> "$age лет"
+        (age % 10 == 0) || (age % 10 in 5..9) -> "$age лет"
+        age % 10 == 1 -> "$age год"
+        else -> "$age года"
+    }
 }
+
 /**
  * Простая
  *
@@ -81,9 +85,11 @@ fun timeForHalfWay(t1: Double, v1: Double,
                    t2: Double, v2: Double,
                    t3: Double, v3: Double): Double {
     val halfWay = (t1 * v1 + t2 * v2 + t3 * v3) / 2
-    if (halfWay <= (t1 * v1)) return halfWay / v1
-    if (halfWay <= ((t1 * v1) + (t2 * v2))) return t1 + ((halfWay - t1 * v1) / v2)
-    return t1 + t2 + (halfWay - t1 * v1 - t2 * v2) / v3
+    return when {
+        halfWay <= (t1 * v1) -> halfWay / v1
+        halfWay <= ((t1 * v1) + (t2 * v2)) -> t1 + ((halfWay - t1 * v1) / v2)
+        else -> t1 + t2 + (halfWay - t1 * v1 - t2 * v2) / v3
+    }
 }
 
 /**
@@ -99,12 +105,14 @@ fun timeForHalfWay(t1: Double, v1: Double,
 fun whichRookThreatens(kingX: Int, kingY: Int,
                        rookX1: Int, rookY1: Int,
                        rookX2: Int, rookY2: Int): Int {
-    val danger1 = ((kingX == rookX1) or (kingY == rookY1))
-    val danger2 = ((kingX == rookX2) or (kingY == rookY2))
-    if (danger1 and danger2) return 3
-    if (danger1) return 1
-    if (danger2) return 2
-    return 0
+    val danger1 = ((kingX == rookX1) || (kingY == rookY1))
+    val danger2 = ((kingX == rookX2) || (kingY == rookY2))
+    return when {
+        danger1 && danger2 -> 3
+        danger1 -> 1
+        danger2 -> 2
+        else -> 0
+    }
 }
 
 /**
@@ -120,12 +128,14 @@ fun whichRookThreatens(kingX: Int, kingY: Int,
 fun rookOrBishopThreatens(kingX: Int, kingY: Int,
                           rookX: Int, rookY: Int,
                           bishopX: Int, bishopY: Int): Int {
-    val rook = ((kingX == rookX) or (kingY == rookY))
+    val rook = ((kingX == rookX) || (kingY == rookY))
     val bishop = (abs(kingX - bishopX) == abs(kingY - bishopY))
-    if (rook and bishop) return 3
-    if (rook) return 1
-    if (bishop) return 2
-    return 0
+    return when {
+        rook && bishop -> 3
+        rook -> 1
+        bishop -> 2
+        else -> 0
+    }
 }
 
 /**
@@ -137,13 +147,15 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    if (((a + b) < c) or ((a + c) < b) or ((b + c) < a)) return -1
+    if (((a + b) < c) || ((a + c) < b) || ((b + c) < a)) return -1
     val cosA = (sqr(b) + sqr(c) - sqr(a)) / (b * c)
     val cosB = (sqr(a) + sqr(c) - sqr(b)) / (a * c)
     val cosC = (sqr(a) + sqr(b) - sqr(c)) / (a * b)
-    if ((cosA < 0) or (cosB < 0) or (cosC < 0)) return 2
-    if ((cosA == 0.0) or (cosB == 0.0) or (cosC == 0.0)) return 1
-    return 0
+    return when {
+        (cosA < 0) or (cosB < 0) or (cosC < 0) -> 2
+        (cosA == 0.0) or (cosB == 0.0) or (cosC == 0.0) -> 1
+        else -> 0
+    }
 
 
 }
@@ -157,13 +169,17 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Если пересечения нет, вернуть -1.
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
-    if ((c >= a) and (c <= b)) {
-        if (b <= d) return b - c
-        return d - c
+    return when {
+        (c >= a) and (c <= b) -> {
+            if (b <= d) {
+                b - c
+            } else d - c
+        }
+        (a >= c) and (a <= d) -> {
+            if (d <= b) {
+                d - a
+            } else b - a
+        }
+        else -> -1
     }
-    if ((a >= c) and (a <= d)){
-        if (d <= b) return d - a
-        return b - a
-    }
-    return -1
 }
