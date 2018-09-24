@@ -6,6 +6,7 @@ import lesson1.task1.discriminant
 import lesson1.task1.sqr
 import kotlin.math.abs
 import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.sqrt
 
 /**
@@ -65,13 +66,11 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * Мой возраст. Для заданного 0 < n < 200, рассматриваемого как возраст человека,
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
-fun ageDescription(age: Int): String {
-    return when {
-        age % 100 in 11..19 -> "$age лет"
-        (age % 10 == 0) || (age % 10 in 5..9) -> "$age лет"
-        age % 10 == 1 -> "$age год"
-        else -> "$age года"
-    }
+fun ageDescription(age: Int): String = when {
+    age % 100 in 11..19 -> "$age лет"
+    (age % 10 == 0) || (age % 10 in 5..9) -> "$age лет"
+    age % 10 == 1 -> "$age год"
+    else -> "$age года"
 }
 
 /**
@@ -152,12 +151,10 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
     val cosB = (sqr(a) + sqr(c) - sqr(b)) / (a * c)
     val cosC = (sqr(a) + sqr(b) - sqr(c)) / (a * b)
     return when {
-        (cosA < 0) or (cosB < 0) or (cosC < 0) -> 2
-        (cosA == 0.0) or (cosB == 0.0) or (cosC == 0.0) -> 1
+        (cosA < 0) || (cosB < 0) || (cosC < 0) -> 2
+        (cosA == 0.0) || (cosB == 0.0) || (cosC == 0.0) -> 1
         else -> 0
     }
-
-
 }
 
 /**
@@ -168,18 +165,12 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
-    return when {
-        (c >= a) and (c <= b) -> {
-            if (b <= d) {
-                b - c
-            } else d - c
-        }
-        (a >= c) and (a <= d) -> {
-            if (d <= b) {
-                d - a
-            } else b - a
-        }
-        else -> -1
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int = when {
+    (c in a..b) -> {
+        min(b, d) - c
     }
+    (a in c..d) -> {
+        min(d, b) - a
+    }
+    else -> -1
 }
