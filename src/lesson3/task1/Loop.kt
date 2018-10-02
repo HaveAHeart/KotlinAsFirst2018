@@ -69,12 +69,12 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun digitNumber(n: Int): Int {
-    var num = n
+    var n = abs(n)
     var count = 0
     do {
         count += 1
-        num /= 10
-    } while (num > 0)
+        n /= 10
+    } while (n > 0)
     return count
 }
 
@@ -152,7 +152,7 @@ fun maxDivisor(n: Int): Int {
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
 fun isCoPrime(m: Int, n: Int): Boolean {
-    if (m % n == 0 || n % m == 0) return false
+    if (m % n == 0 || n % m == 0) return (m == 1 || n == 1)
     else {
         val lower = min(m, n)
         val root = sqrt(lower.toDouble()).toInt()
