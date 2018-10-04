@@ -84,19 +84,17 @@ fun digitNumber(n: Int): Int {
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int {
-    return if (n == 1 || n == 2) 1
-    else {
-        var fib = 1
-        var fib2 = 1
-        var answer = 0
-        for (i in 3..n) {
-            answer = fib + fib2
-            fib = fib2
-            fib2 = answer
-        }
-        answer
+fun fib(n: Int): Int = if (n == 1 || n == 2) 1
+else {
+    var fib = 1
+    var fib2 = 1
+    var answer = 0
+    for (i in 3..n) {
+        answer = fib + fib2
+        fib = fib2
+        fib2 = answer
     }
+    answer
 }
 
 /**
@@ -105,17 +103,15 @@ fun fib(n: Int): Int {
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun lcm(m: Int, n: Int): Int {
-    return if (m == n) m
-    else {
-        var num1 = m
-        var num2 = n
-        while (num1 != num2) {
-            if (num1 > num2) num1 -= num2
-            else num2 -= num1
-        }
-        m * (n / num1)
+fun lcm(m: Int, n: Int): Int = if (m == n) m
+else {
+    var num1 = m
+    var num2 = n
+    while (num1 != num2) {
+        if (num1 > num2) num1 -= num2
+        else num2 -= num1
     }
+    m * (n / num1)
 }
 
 /**
@@ -136,13 +132,7 @@ fun minDivisor(n: Int): Int {
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int {
-    val rootn = sqrt(n.toDouble()).toInt()
-    for (i in n - 1 downTo rootn) {
-        if (n % i == 0) return i
-    }
-    return 1
-}
+fun maxDivisor(n: Int): Int = n / minDivisor(n)
 
 /**
  * Простая
@@ -302,14 +292,14 @@ fun hasDifferentDigits(n: Int): Boolean {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun numberLength (n: Int): Int {
+fun numberToList(n: Int): List<Int> {
     var n = n
-    var length = 0
+    val digitsArr = mutableListOf<Int>()
     while (n > 0) {
+        digitsArr.add(n % 10)
         n /= 10
-        length += 1
     }
-    return length
+    return digitsArr
 }
 fun squareSequenceDigit(n: Int): Int {
     var length = 0
@@ -318,15 +308,11 @@ fun squareSequenceDigit(n: Int): Int {
     while (true) {
         i += 1
         sqr = i * i
-        if (length + numberLength(sqr) >= n) {
-            val digitsArr = mutableListOf<Int>()
-            while (sqr > 0) {
-                digitsArr.add(sqr % 10)
-                sqr /= 10
-            }
+        if (length + digitNumber(sqr) >= n) {
+            val digitsArr = numberToList(sqr)
             return digitsArr[digitsArr.size - (n - length)]
         }
-        length += numberLength(sqr)
+        length += digitNumber(sqr)
     }
 }
 
@@ -339,6 +325,7 @@ fun squareSequenceDigit(n: Int): Int {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
+
 fun fibSequenceDigit(n: Int): Int {
     if (n == 1 || n == 2) return 1
     else {
@@ -348,15 +335,11 @@ fun fibSequenceDigit(n: Int): Int {
         var length = 2
         while (true) {
             fib3 = fib1 + fib2
-            if (length + numberLength(fib3) >= n) {
-                val digitsArr = mutableListOf<Int>()
-                while (fib3 > 0) {
-                    digitsArr.add(fib3 % 10)
-                    fib3 /= 10
-                }
+            if (length + digitNumber(fib3) >= n) {
+                val digitsArr = numberToList(fib3)
                 return digitsArr[digitsArr.size - (n - length)]
             }
-            length += numberLength(fib3)
+            length += digitNumber(fib3)
             fib1 = fib2
             fib2 = fib3
         }
