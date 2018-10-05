@@ -85,15 +85,15 @@ fun digitNumber(n: Int): Int {
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
 fun fib(n: Int): Int = if (n == 1 || n == 2) 1
-else {
-    var fib = 1
-    var fib2 = 1
-    var answer = 0
-    for (i in 3..n) {
-        answer = fib + fib2
-        fib = fib2
-        fib2 = answer
-    }
+    else {
+        var fib = 1
+        var fib2 = 1
+        var answer = 0
+        for (i in 3..n) {
+            answer = fib + fib2
+            fib = fib2
+            fib2 = answer
+        }
     answer
 }
 
@@ -104,13 +104,13 @@ else {
  * минимальное число k, которое делится и на m и на n без остатка
  */
 fun lcm(m: Int, n: Int): Int = if (m == n) m
-else {
-    var num1 = m
-    var num2 = n
-    while (num1 != num2) {
-        if (num1 > num2) num1 -= num2
-        else num2 -= num1
-    }
+    else {
+        var num1 = m
+        var num2 = n
+        while (num1 != num2) {
+            if (num1 > num2) num1 -= num2
+            else num2 -= num1
+        }
     m * (n / num1)
 }
 
