@@ -112,7 +112,7 @@ fun lcm(m: Int, n: Int): Int = if (m == n) m
             else num2 -= num1
         }
     m * (n / num1)
-}
+    }
 
 /**
  * Простая
@@ -125,7 +125,7 @@ fun minDivisor(n: Int): Int {
         if (n % i == 0) return i
     }
     return n
-}
+    }
 
 /**
  * Простая
