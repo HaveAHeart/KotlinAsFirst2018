@@ -94,8 +94,8 @@ fun fib(n: Int): Int = if (n == 1 || n == 2) 1
             fib = fib2
             fib2 = answer
         }
-    answer
-}
+        answer
+    }
 
 /**
  * Простая
@@ -111,7 +111,7 @@ fun lcm(m: Int, n: Int): Int = if (m == n) m
             if (num1 > num2) num1 -= num2
             else num2 -= num1
         }
-    m * (n / num1)
+        m * (n / num1)
     }
 
 /**
@@ -125,7 +125,7 @@ fun minDivisor(n: Int): Int {
         if (n % i == 0) return i
     }
     return n
-    }
+}
 
 /**
  * Простая
