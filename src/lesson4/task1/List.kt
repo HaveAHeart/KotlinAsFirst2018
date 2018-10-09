@@ -117,13 +117,9 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * по формуле abs = sqrt(a1^2 + a2^2 + ... + aN^2).
  * Модуль пустого вектора считать равным 0.0.
  */
-fun abs(v: List<Double>): Double {
-    var sum = 0.0
-    for (i in v) {
-        sum += i * i
-    }
-    return sqrt(sum)
-}
+fun abs(v: List<Double>): Double = sqrt(v.fold(0.0) { prev, curr ->
+    prev + Math.pow(curr, 2.0)
+})
 
 /**
  * Простая
@@ -142,12 +138,9 @@ else list.sum() / list.size
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
-    if (list.isEmpty()) return list
-    else {
-        var mean = mean(list)
-        for (i in 0 until list.size) list[i] -= mean
-        return list
-    }
+    var mean = mean(list)
+    for (i in 0 until list.size) list[i] -= mean
+    return list
 }
 
 /**
@@ -157,13 +150,8 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  * представленные в виде списков a и b. Скалярное произведение считать по формуле:
  * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.0.
  */
-fun times(a: List<Double>, b: List<Double>): Double {
-    if (a.isEmpty() || b.isEmpty()) return 0.0
-    else {
-        var c = 0.0
-        for (i in 0 until a.size) c += a[i] * b[i]
-        return c
-    }
+fun times(a: List<Double>, b: List<Double>): Double = a.zip(b).fold(0.0) { prev, curr ->
+    prev + (curr.toList()[0] * curr.toList()[1])
 }
 
 /**
@@ -174,11 +162,14 @@ fun times(a: List<Double>, b: List<Double>): Double {
  * Коэффициенты многочлена заданы списком p: (p0, p1, p2, p3, ..., pN).
  * Значение пустого многочлена равно 0.0 при любом x.
  */
-fun polynom(p: List<Double>, x: Double): Double = if (p.isEmpty()) 0.0
-else {
-    var sum = 0.0
-    for (i in 0 until p.size) sum += p[i] * Math.pow(x, i.toDouble())
-    sum
+fun polynom(p: List<Double>, x: Double): Double {
+    var p = p.toMutableList()
+    for ((i, value) in p.withIndex()) {
+        p[i] = value * Math.pow(x, i.toDouble())
+    }
+    return p.fold(0.0) { prev, curr ->
+        prev + curr
+    }
 }
 
 /**
@@ -191,14 +182,13 @@ else {
  *
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
-fun accumulate(list: MutableList<Double>): MutableList<Double> = if (list.isEmpty()) list
-else {
+fun accumulate(list: MutableList<Double>): MutableList<Double> {
     var sum = 0.0
     for (i in 0 until list.size) {
         sum += list[i]
         list[i] = sum
     }
-    list
+    return list
 }
 
 /**
@@ -208,8 +198,7 @@ else {
  * Результат разложения вернуть в виде списка множителей, например 75 -> (3, 5, 5).
  * Множители в списке должны располагаться по возрастанию.
  */
-fun factorize(n: Int): List<Int> = if (n == 2) listOf(2)
-else {
+fun factorize(n: Int): List<Int> {
     var n = n
     var list = mutableListOf<Int>()
     while (n > 1) {
@@ -221,7 +210,7 @@ else {
             }
         }
     }
-    list
+    return list
 }
 
 /**
@@ -260,15 +249,15 @@ fun convert(n: Int, base: Int): List<Int> {
  * Например: n = 100, base = 4 -> 1210, n = 250, base = 14 -> 13c
  */
 fun convertToString(n: Int, base: Int): String {
-    var str = ""
+    var sb = StringBuilder()
     val alphabet = "abcdefghijklmnopqrstuvwxyz"
     var list = convert(n, base)
     for (i in list) {
-        str += if (i >= 10) alphabet[i - 10]
-        else i
+        sb.append(if (i >= 10) alphabet[i - 10]
+        else i)
     }
-    return if (str.isBlank()) "0"
-    else str
+    return if (sb.isBlank()) "0"
+    else sb.toString()
 }
 
 /**
@@ -342,7 +331,7 @@ fun roman(n: Int): String {
  */
 fun threeDigsToStr(n: Int, thousands: Boolean): String {
     var n = n
-    var answ = ""
+    var sb = StringBuilder()
     val listDigits = listOf("", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
     val listDigitsEnd = listOf("", "одна", "две", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
     val listSpecial = listOf("", "одиннадцать", "двенадцать", "тринадцать", "четырнадцать",
@@ -352,21 +341,21 @@ fun threeDigsToStr(n: Int, thousands: Boolean): String {
     val listHundreds = listOf("", "сто", "двести", "триста", "четыреста",
             "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот")
     val listThousands = listOf("тысяча", "тысячи", "тысяч")
-    answ += listHundreds[n / 100]                                                         //разбираемся с сотнями
+    sb.append(listHundreds[n / 100])                                                       //разбираемся с сотнями
     n %= 100
     if (thousands) {
         when (n) {                                                                        //разбираемся с десятками
-            0 -> return answ + " " + listThousands[2]
-            in 11..19 -> return answ +
-                    if (answ.isBlank()) listSpecial[n % 10] + " " + listThousands[2]                    //отсекаем 11-19
-                    else " " + listSpecial[n % 10] + " " + listThousands[2]
+            0 -> return sb.append(" " + listThousands[2]).toString()
+            in 11..19 -> return sb.append(
+                    if (sb.isBlank()) listSpecial[n % 10] + " " + listThousands[2]                    //отсекаем 11-19
+                    else " " + listSpecial[n % 10] + " " + listThousands[2]).toString()
         }
         if (n > 9) {
-            answ += if (answ.isBlank()) listTenth[n / 10]
-            else " " + listTenth[n / 10]
+            sb.append(if (sb.isBlank()) listTenth[n / 10]
+            else " " + listTenth[n / 10])
             n %= 10
         }
-        return if (answ.isBlank()) {                                                       //разбираемся с единицами
+        return if (sb.isBlank()) {                                                       //разбираемся с единицами
             when (n) {
                 0 -> listThousands[2]
                 1 -> listDigitsEnd[n] + " " + listThousands[0]
@@ -375,27 +364,27 @@ fun threeDigsToStr(n: Int, thousands: Boolean): String {
             }
         } else {
             when (n) {
-                0 -> answ + " " + listThousands[2]
-                1 -> answ + " " + listDigitsEnd[n] + " " + listThousands[0]
-                in 2..4 -> answ + " " + listDigitsEnd[n] + " " + listThousands[1]
-                else -> answ + " " + listDigitsEnd[n] + " " + listThousands[2]
+                0 -> sb.append(" ", listThousands[2]).toString()
+                1 -> sb.append(" ", listDigitsEnd[n], " ", listThousands[0]).toString()
+                in 2..4 -> sb.append(" ", listDigitsEnd[n], " ", listThousands[1]).toString()
+                else -> sb.append(" ", listDigitsEnd[n], " ", listThousands[2]).toString()
             }
         }
     } else {
         when (n) {                                                                        //разбираемся с десятками
-            0 -> return answ
-            in 11..19 -> return answ +
-                    if (answ.isBlank()) listSpecial[n % 10] else " " + listSpecial[n % 10]//отсекаем 11-19
+            0 -> return sb.toString()
+            in 11..19 -> return sb.append(if (sb.isBlank()) listSpecial[n % 10]
+            else " " + listSpecial[n % 10]).toString()                                    //отсекаем 11-19
         }
         if (n > 9) {
-            answ += if (answ.isBlank()) listTenth[n / 10]
-            else " " + listTenth[n / 10]
+            sb.append(if (sb.isBlank()) listTenth[n / 10]
+            else " " + listTenth[n / 10])
             n %= 10
         }
-        return if (answ.isBlank()) {                                                      //разбираемся с единицами
+        return if (sb.isBlank()) {                                                      //разбираемся с единицами
             listDigits[n]
         } else {
-            answ + " " + listDigits[n]
+            sb.append(" ", listDigits[n]).toString()
         }
     }
 }
