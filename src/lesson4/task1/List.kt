@@ -247,7 +247,8 @@ fun convert(n: Int, base: Int): List<Int> {
         list.add(0, n % base)
         n = (n - (n % base)) / base
     }
-    return list
+    return if (list.isEmpty()) listOf(0)
+    else list
 }
 
 /**
@@ -266,7 +267,8 @@ fun convertToString(n: Int, base: Int): String {
         str += if (i >= 10) alphabet[i - 10]
         else i
     }
-    return str
+    return if (str.isBlank()) "0"
+    else str
 }
 
 /**
@@ -406,8 +408,8 @@ fun russian(n: Int): String {
         val greaterThree = n / 1000
         val lesserStr = threeDigsToStr(lesserThree, false)
         val greaterStr = threeDigsToStr(greaterThree, true)
-        if (lesserStr != "" && greaterStr != "") "$greaterStr $lesserStr"
-        else "$greaterStr$lesserStr"
+        if (lesserStr != "" && greaterStr != "") "$greaterStr $lesserStr".trim()
+        else "$greaterStr$lesserStr".trim()
 
     }
 }
