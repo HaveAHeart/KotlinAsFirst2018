@@ -127,7 +127,7 @@ fun abs(v: List<Double>): Double = sqrt(v.fold(0.0) { prev, curr ->
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
 fun mean(list: List<Double>): Double = if (list.isEmpty()) 0.0
-else list.sum() / list.size
+    else list.sum() / list.size
 
 /**
  * Средняя
@@ -151,7 +151,7 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.0.
  */
 fun times(a: List<Double>, b: List<Double>): Double = a.zip(b).fold(0.0) { prev, curr ->
-    prev + (curr.toList()[0] * curr.toList()[1])
+    prev + (curr.first * curr.second)
 }
 
 /**
