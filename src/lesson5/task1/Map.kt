@@ -270,7 +270,8 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    for (i in word) {
+    val chars = chars.map { it.toLowerCase() }
+    for (i in word.toLowerCase()) {
         if (i !in chars) return false
     }
     return true
@@ -314,14 +315,14 @@ fun hasAnagrams(words: List<String>): Boolean {
             var bool = true
             if (words[i].length <= words[b].length) {
                 for (ch in words[i]) {
-                    if (words[b].count { it == ch } < words[i].count { it == ch }) {
+                    if (words[i].count { it == ch } < words[b].count { it == ch }) {
                         bool = false
                         break
                     }
                 }
             } else {
                 for (ch in words[b]) {
-                    if (words[i].count { it == ch } < words[b].count { it == ch }) {
+                    if (words[b].count { it == ch } < words[i].count { it == ch }) {
                         bool = false
                         break
                     }
@@ -351,9 +352,8 @@ fun hasAnagrams(words: List<String>): Boolean {
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    var list = list.filter { it <= number }
     for (i in 0 until list.size) {
-        for (b in list.size - 1 downTo i + 1) {
+        for (b in i + 1 until list.size) {
             if (list[i] + list[b] == number) return Pair(i, b)
         }
     }
