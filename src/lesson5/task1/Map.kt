@@ -308,19 +308,24 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
 fun hasAnagrams(words: List<String>): Boolean {
+    if (words.isEmpty() || words.size == 1) return false
     for (i in 0 until words.size) {
         for (b in i + 1 until words.size) {
             var bool = true
-            if (words[i].length <= words[b].length) {
-                for (ch in words[i]) {
-                    if (words[i].count { it == ch } < words[b].count { it == ch }) {
+            var a = words[i]
+            var c = words[b]
+            if (a.length <= c.length) {
+                for (ch in a) {
+                    var ca = words[i].count { it == ch }
+                    var cb = words[b].count { it == ch }
+                    if (words[i].count { it == ch } > words[b].count { it == ch }) {
                         bool = false
                         break
                     }
                 }
             } else {
-                for (ch in words[b]) {
-                    if (words[b].count { it == ch } < words[i].count { it == ch }) {
+                for (ch in c) {
+                    if (words[b].count { it == ch } > words[i].count { it == ch }) {
                         bool = false
                         break
                     }
