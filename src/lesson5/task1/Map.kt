@@ -3,6 +3,7 @@
 package lesson5.task1
 
 import java.time.temporal.TemporalAmount
+import kotlin.Double.Companion.MAX_VALUE
 
 /**
  * Пример
@@ -189,16 +190,13 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *   ) -> "Мария"
  */
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
-    var answ = Pair("", 0.0)
-    var cost = 0.0
+    var answ: Pair<String?, Double> = Pair(null, MAX_VALUE)
     for ((key, value) in stuff) {
-        if (value.first == kind) {
-            if (answ.first == "" || answ.second > value.second)
-                answ = Pair(key, value.second)
+        if (value.first == kind && (answ.first == null || answ.second > value.second)) {
+            answ = Pair(key, value.second)
         }
     }
-    return if (answ.first == "") null
-    else answ.first
+    return answ.first
 }
 
 /**
