@@ -378,44 +378,36 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
-fun recurEnd(list: List<Pair<String, Pair<Int, Int>>>,
-             currList: List<Pair<String, Pair<Int, Int>>>):
-        List<List<Pair<String, Pair<Int, Int>>>> = listOf(currList.plusElement(list[0]))
-//выход из рекурсии
-
-fun recur(list: List<Pair<String, Pair<Int, Int>>>,
-          currList: List<Pair<String, Pair<Int, Int>>>):
-        List<List<Pair<String, Pair<Int, Int>>>> {
-    if (list.size == 1) return recurEnd(list, currList)
-    var returnList: List<List<Pair<String, Pair<Int, Int>>>> = listOf()
-    returnList = returnList.plusElement(currList)
-    for (i in list) {
-        returnList = returnList.plusElement(currList.plusElement(i))
-        for (b in recur(
-                list.minusElement(i), currList.plusElement(i))) {
-            returnList = returnList.plusElement(b)
-        }
-    }
-    return returnList
-}
-//генерируем list из всех возможных комбинаций
 
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
     var treasures = treasures.toList()
-    var maxSum = 0
-    var answSet: Set<String> = setOf()
-    for (i in recur(treasures, listOf())) {
-        var sum = 0
-        var weight = 0
-        for (b in i) {
-            sum += b.second.second
-            weight += b.second.first
-        }
-        if (weight <= capacity && sum > maxSum) {
-            var currSet: Set<String> = setOf()
-            for ((first) in i) currSet = currSet.plusElement(first)
-            answSet = currSet
+    var bag: MutableList<MutableList<Pair<Set<String>, Int>>> = mutableListOf()
+    for (i in 0..treasures.size) {
+        bag = bag.plusElement(mutableListOf()).toMutableList()
+        for (j in 0..capacity) {
+            bag[i] = bag[i].plusElement(setOf<String>() to 0).toMutableList()
         }
     }
-    return answSet
+    var maxCost = 0
+    var maxSet = setOf<String>()
+    for (i in 0 until treasures.size) {
+        for (j in 0..capacity) {
+            if (treasures[i].second.first > j) {
+                bag[i + 1][j] = bag[i][j]
+            } else {
+                if (bag[i][j].second <= bag[i][j - treasures[i].second.first].second + treasures[i].second.second) {
+                    bag[i + 1][j] =
+                            (setOf(treasures[i].first) + bag[i][j - treasures[i].second.first].first) to
+                            (bag[i][j - treasures[i].second.first].second + treasures[i].second.second)
+                } else {
+                    bag[i + 1][j] = bag[i][j]
+                }
+            }
+            if (maxCost < bag[i][j].second) {
+                maxCost = bag[i][j].second
+                maxSet = bag[i][j].first
+            }
+        }
+    }
+    return maxSet
 }
