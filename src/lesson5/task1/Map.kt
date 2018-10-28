@@ -197,8 +197,8 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
                 answ = Pair(key, value.second)
         }
     }
-    if (answ.first == "") return null
-    else return answ.first
+    return if (answ.first == "") null
+    else answ.first
 }
 
 /**
@@ -309,8 +309,26 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
 fun hasAnagrams(words: List<String>): Boolean {
-    for (i in words) {
-        if (i.reversed() in words) return true
+    for (i in 0 until words.size) {
+        for (b in i + 1 until words.size) {
+            var bool = true
+            if (words[i].length <= words[b].length) {
+                for (ch in words[i]) {
+                    if (words[b].count { it == ch } < words[i].count { it == ch }) {
+                        bool = false
+                        break
+                    }
+                }
+            } else {
+                for (ch in words[b]) {
+                    if (words[i].count { it == ch } < words[b].count { it == ch }) {
+                        bool = false
+                        break
+                    }
+                }
+            }
+            if (bool) return true
+        }
     }
     return false
 }
@@ -333,23 +351,10 @@ fun hasAnagrams(words: List<String>): Boolean {
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    if (number == 0) {
-        if (list.count { it == 0 } >= 2) {
-            var p = Pair(-1, -1)
-            for (i in 0 until list.size) {
-                if (list[i] == 0) {
-                    if (p.first == -1) {
-                        val p = Pair(i, -1)
-                    } else return Pair(p.first, i)
-                }
-            }
-        } else return Pair(-1, -1)
-    }
-    var list = list.sorted()
+    var list = list.filter { it <= number }
     for (i in 0 until list.size) {
-        if (list[i] > number) continue
-        for (b in (list.size - 1) downTo (i + 1)) {
-            if ((list[i] + list[b]) == number) return Pair(i, b)
+        for (b in list.size - 1 downTo i + 1) {
+            if (list[i] + list[b] == number) return Pair(i, b)
         }
     }
     return Pair(-1, -1)
