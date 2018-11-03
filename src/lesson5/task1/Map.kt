@@ -148,9 +148,7 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean =
  *     -> mapOf("MSFT" to 150.0, "NFLX" to 40.0)
  */
 fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> =
-        stockPrices.groupBy { it.first }.mapValues { it.value.sumBy { arg -> (arg.second / it.value.size).toInt() } }.mapValues { it.value.toDouble() }
-//получаю map<String, List<Pair<String, Double>> после groupBy - список пар, для разбора которого и написал
-//sumBy - боль и страдания :c
+        stockPrices.groupBy { it.first }.mapValues { it.value.sumByDouble { arg -> (arg.second / it.value.size) } }
 
 /**
  * Средняя
