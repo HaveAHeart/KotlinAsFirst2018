@@ -2,6 +2,11 @@
 
 package lesson5.task1
 
+import kotlin.Double.Companion.MAX_VALUE
+import kotlin.Double.Companion.MIN_VALUE
+import kotlin.Double.Companion.NEGATIVE_INFINITY
+import kotlin.Double.Companion.POSITIVE_INFINITY
+
 /**
  * Пример
  *
@@ -147,9 +152,17 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean =
  *   averageStockPrice(listOf("MSFT" to 100.0, "MSFT" to 200.0, "NFLX" to 40.0))
  *     -> mapOf("MSFT" to 150.0, "NFLX" to 40.0)
  */
-fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> =
-        stockPrices.groupBy { it.first }.mapValues { it.value.sumByDouble { arg -> (arg.second / it.value.size) } }
-
+fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
+    val answ = stockPrices.groupBy { it.first }.mapValues { it.value.sumByDouble { arg -> (arg.second / it.value.size) } }
+            .toMutableMap()
+    //костыль - объясните, пожалуйста, почему котоед считает значения типа 2.396924179816421e+307 бесконечностью :c
+    //реализовал бы в одну строку, но придётся сделать так:
+    for ((key, value) in answ) {
+        if (value > MAX_VALUE) answ[key] = POSITIVE_INFINITY
+        if (value < MIN_VALUE) answ[key] = NEGATIVE_INFINITY
+    }
+    return answ
+}
 /**
  * Средняя
  *
