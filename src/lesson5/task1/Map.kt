@@ -2,8 +2,6 @@
 
 package lesson5.task1
 
-import kotlin.Double.Companion.MAX_VALUE
-
 /**
  * Пример
  *
