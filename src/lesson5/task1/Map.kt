@@ -296,6 +296,7 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
  * Например:
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
+//set не даст хранить несколько одинаковых элементов, а анаграммы иногда имеют по несколько одинаковых символов
 fun hasAnagrams(words: List<String>): Boolean {
     for (i in 0 until words.size - 1) {
         for (b in i + 1 until words.size) {
