@@ -135,7 +135,7 @@ else list.sum() / list.size
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
     val mean = mean(list)
-    for (i in 0 until list.size) list[i] -= mean
+    list.replaceAll { it - mean }
     return list
 }
 
@@ -268,9 +268,8 @@ fun decimal(digits: List<Int>, base: Int): Int =
  */
 fun decimalFromString(str: String, base: Int): Int {
     val list = mutableListOf<Int>()
-    val nums = "0123456789"
     for (i in str) {
-        list.add(if (i in nums) nums.indexOf(i)
+        list.add(if (i.toInt() in '0'.toInt()..'9'.toInt()) i - '0'
         else i - 'a' + 10)
     }
     return decimal(list, base)

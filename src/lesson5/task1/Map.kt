@@ -2,10 +2,7 @@
 
 package lesson5.task1
 
-import kotlin.Double.Companion.MAX_VALUE
-import kotlin.Double.Companion.MIN_VALUE
-import kotlin.Double.Companion.NEGATIVE_INFINITY
-import kotlin.Double.Companion.POSITIVE_INFINITY
+import lesson4.task1.mean
 
 /**
  * Пример
@@ -152,17 +149,9 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean =
  *   averageStockPrice(listOf("MSFT" to 100.0, "MSFT" to 200.0, "NFLX" to 40.0))
  *     -> mapOf("MSFT" to 150.0, "NFLX" to 40.0)
  */
-fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
-    val answ = stockPrices.groupBy { it.first }.mapValues { it.value.sumByDouble { arg -> (arg.second / it.value.size) } }
-            .toMutableMap()
-    //костыль - объясните, пожалуйста, почему котоед считает значения типа 2.396924179816421e+307 бесконечностью :c
-    //реализовал бы в одну строку, но придётся сделать так:
-    for ((key, value) in answ) {
-        if (value > MAX_VALUE) answ[key] = POSITIVE_INFINITY
-        if (value < MIN_VALUE) answ[key] = NEGATIVE_INFINITY
-    }
-    return answ
-}
+fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> =
+        stockPrices.groupBy({ it.first }, { it.second }).mapValues { mean(it.value) }
+
 /**
  * Средняя
  *
@@ -270,11 +259,9 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.intersect(b
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    val chars = chars.map { it.toLowerCase() }
-    for (i in word.toLowerCase()) {
-        if (i !in chars) return false
-    }
-    return true
+    chars.forEach { it.toLowerCase() }
+    return chars.containsAll(word.toLowerCase().toSet())
+
 }
 
 /**
@@ -309,15 +296,8 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
  * Например:
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
-//set не даст хранить несколько одинаковых элементов, а анаграммы иногда имеют по несколько одинаковых символов
-fun hasAnagrams(words: List<String>): Boolean {
-    for (i in 0 until words.size - 1) {
-        for (b in i + 1 until words.size) {
-            if (words.map { it.toList().sorted() }[i] == words.map { it.toList().sorted() }[b]) return true
-        }
-    }
-    return false
-}
+fun hasAnagrams(words: List<String>): Boolean =
+        words.size != words.map { it.toList().sorted() }.toSet().size
 
 /**
  * Сложная
