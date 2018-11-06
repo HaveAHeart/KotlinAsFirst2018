@@ -367,8 +367,8 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
                 }
             }
             if (maxCost < bag[i][j].second) {
-                maxCost = bag[i][j].second
-                maxSet = bag[i][j].first
+                maxCost = bag[i + 1][j].second
+                maxSet = bag[i + 1][j].first
             }
         }
     }
