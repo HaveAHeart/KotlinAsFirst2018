@@ -266,6 +266,35 @@ class Tests {
         assertFalse(canBuildFrom(emptyList(), "foo"))
         assertTrue(canBuildFrom(listOf('a', 'b', 'o'), "baobab"))
         assertFalse(canBuildFrom(listOf('a', 'm', 'r'), "Marat"))
+        assertTrue(canBuildFrom(listOf(
+                'm',
+                'K',
+                ')',
+                ';',
+                '&',
+                'W',
+                '6',
+                'B',
+                'y',
+                'v',
+                'D',
+                '鄘',
+                'g',
+                '',
+                'ٗ',
+                '댴',
+                ',',
+                '5',
+                '',
+                '*',
+                'V',
+                'H',
+                '{',
+                'M',
+                'G',
+                '듼',
+                'Y'
+        ), "W5"))
     }
 
     @Test
