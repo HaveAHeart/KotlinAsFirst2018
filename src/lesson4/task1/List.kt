@@ -266,14 +266,8 @@ fun decimal(digits: List<Int>, base: Int): Int =
  * 10 -> a, 11 -> b, 12 -> c и так далее.
  * Например: str = "13c", base = 14 -> 250
  */
-fun decimalFromString(str: String, base: Int): Int {
-    val list = mutableListOf<Int>()
-    for (i in str) {
-        list.add(if (i.toInt() in '0'.toInt()..'9'.toInt()) i - '0'
-        else i - 'a' + 10)
-    }
-    return decimal(list, base)
-}
+fun decimalFromString(str: String, base: Int): Int = str.toInt(base)
+//всё было ещё проще
 
 /**
  * Сложная
