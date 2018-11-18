@@ -175,8 +175,8 @@ fun flattenPhoneNumber(phone: String): String {
  */
 fun bestLongJump(jumps: String): Int = try {
     jumps.split(" ").onEach { it ->
-        if (it == "-" || it == "%" || it == "") 0
-        else it.toInt()
+        if (it == "-" || it == "%" || it == "") 0.0
+        else it.toDouble()
     }.max()!!.toInt()
 } catch (e: NumberFormatException) {
     -1
