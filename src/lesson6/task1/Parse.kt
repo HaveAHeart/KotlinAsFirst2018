@@ -173,15 +173,23 @@ fun flattenPhoneNumber(phone: String): String {
  * Прочитать строку и вернуть максимальное присутствующее в ней число (717 в примере).
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
-fun bestLongJump(jumps: String): Int = try {
-    jumps.split(" ").onEach { it ->
-        if (it == "-" || it == "%" || it == "") 0.0
-        else it.toDouble()
-    }.max()!!.toInt()
-} catch (e: NumberFormatException) {
-    -1
+fun bestLongJump(jumps: String): Int {
+    return try {
+        val list = jumps.split(" ").onEach { it ->
+            if (it == "-" || it == "%" || it == "") ""
+            else it.toInt()
+        }
+        var max = -1
+        for (i in list) {
+            if (i != "-" && i != "%" && i != ""){
+                if (i.toInt() > max) max = i.toInt()
+            }
+        }
+        max
+    } catch (e: NumberFormatException) {
+        -1
+    }
 }
-
 
 /**
  * Сложная
