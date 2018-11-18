@@ -108,7 +108,7 @@ fun dateDigitToStr(digital: String): String {
             return ""
         }
     }
-    val months = listOf("января", "ферваля", "марта", "апреля", "мая",
+    val months = listOf("января", "февраля", "марта", "апреля", "мая",
             "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря")
     return if ((dig.size != 3 || dig[1] !in 1..12) ||
             (dig[1] in listOf(1, 3, 5, 7, 8, 10, 12) && dig[0] !in 1..31) ||
@@ -174,7 +174,7 @@ fun flattenPhoneNumber(phone: String): String {
  */
 fun bestLongJump(jumps: String): Int = try {
     jumps.split(" ").onEach { it ->
-        if (it == "-" || it == "%") ""
+        if (it == "-" || it == "%" || it == "") ""
         else it.toInt()
     }.max()!!.toInt()
 } catch (e: NumberFormatException) {
@@ -195,17 +195,15 @@ fun bestLongJump(jumps: String): Int = try {
 fun bestHighJump(jumps: String): Int {
     val jumps = jumps.split(" ")
     if (jumps.size % 2 != 0) return -1
-    for (i in jumps.size - 1 downTo 0 step 2) {
-        if (!canBuildFrom(listOf('+', '%', '-'), jumps[i])) return -1
-        if ('+' in jumps[i]) {
-            return try {
-                jumps[i - 1].toInt()
-            } catch (e: NumberFormatException) {
-                -1
-            }
+    var answ = -1
+    for (i in 0 until jumps.size step 2) {
+        try {
+            if ('+' in jumps[i + 1] && jumps[i].toInt() > answ) answ = jumps[i].toInt()
+        } catch (e: NumberFormatException) {
+            return -1
         }
     }
-    return -1
+    return answ
 }
 
 /**
@@ -218,6 +216,7 @@ fun bestHighJump(jumps: String): Int {
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
 fun plusMinus(expr: String): Int {
+    if (expr.isEmpty()) throw IllegalArgumentException()
     val expr = expr.split(" ")
     if (expr.size % 2 != 1) throw IllegalArgumentException()
     for (i in 0 until expr.size) {
@@ -253,7 +252,10 @@ fun firstDuplicateIndex(str: String): Int {
     val words = str.split(" ")
     var index = -1
     for (i in 1 until words.size) {
-        if (words[i].toLowerCase() == words[i - 1].toLowerCase()) index = i - 1
+        if (words[i].toLowerCase() == words[i - 1].toLowerCase()) {
+            index = i - 1
+            break
+        }
     }
     return when (index) {
         -1 -> -1
@@ -309,6 +311,7 @@ fun mostExpensive(description: String): String {
  * Вернуть -1, если roman не является корректным римским числом
  */
 fun fromRoman(roman: String): Int {
+    if (roman.isEmpty()) return -1
     if (!canBuildFrom(listOf('I', 'V', 'X', 'L', 'C', 'D', 'M'), roman)) return -1
     val roman = roman.toMutableList()
     val map = mapOf(
@@ -385,6 +388,7 @@ fun getLoopBody(loopStart: Int, commands: String): String {
     }
     return loopBody.deleteCharAt(0).deleteCharAt(loopBody.lastIndex).toString()
 }
+
 fun process(el: MutableList<Int>, commands: String, curPos: Int, limit: Int): Pair<MutableList<Int>, Pair<Int, Int>> {
     var el = el
     var limit = limit
@@ -423,7 +427,8 @@ fun process(el: MutableList<Int>, commands: String, curPos: Int, limit: Int): Pa
                 i += loopBody.length
             }
             commands[i] == ' ' -> limit--
-            commands[i] == ']' -> {/*ничего, limit учтён в looping*/}
+            commands[i] == ']' -> {/*ничего, limit учтён в looping*/
+            }
             else -> throw IllegalArgumentException()
         }
         if (limit <= 0) break
@@ -431,6 +436,7 @@ fun process(el: MutableList<Int>, commands: String, curPos: Int, limit: Int): Pa
     }
     return Pair(el, Pair(curPos, limit))
 }
+
 fun looping(el: MutableList<Int>, loopBody: String, curPos: Int, limit: Int): Pair<MutableList<Int>, Pair<Int, Int>> {
     var el = el
     var curPos = curPos
