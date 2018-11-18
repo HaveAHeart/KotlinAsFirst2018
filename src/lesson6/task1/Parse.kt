@@ -74,7 +74,7 @@ fun main(args: Array<String>) {
  */
 fun dateStrToDigit(str: String): String {
     val str = str.split(" ")
-    val months = listOf("января", "ферваля", "марта", "апреля", "мая",
+    val months = listOf("января", "февраля", "марта", "апреля", "мая",
             "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря")
     return if ((str.size != 3 || str[1] !in months) ||
             (str[1] in "январямартамаяиюляавгустаоктябрядекабря" && str[0].toInt() !in 1..31) ||
