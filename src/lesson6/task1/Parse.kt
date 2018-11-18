@@ -394,12 +394,12 @@ fun process(el: MutableList<Int>, commands: String, curPos: Int, limit: Int): Pa
         if (limit <= 0) break
         when {
             commands[i] == '+' -> {
-                el[curPos]++
                 limit--
+                el[curPos]++
             }
             commands[i] == '-' -> {
-                el[curPos]--
                 limit--
+                el[curPos]--
             }
             commands[i] == '>' -> {
                 limit--
@@ -412,8 +412,8 @@ fun process(el: MutableList<Int>, commands: String, curPos: Int, limit: Int): Pa
                 else curPos--
             }
             commands[i] == '[' -> {
-                val loopBody = getLoopBody(i, commands)
                 limit--
+                val loopBody = getLoopBody(i, commands)
                 println(loopBody)
                 println(curPos)
                 val loopRes = looping(el, loopBody, curPos, limit)
@@ -423,7 +423,7 @@ fun process(el: MutableList<Int>, commands: String, curPos: Int, limit: Int): Pa
                 i += loopBody.length
             }
             commands[i] == ' ' -> limit--
-            commands[i] == ']' -> {/*ничего*/}
+            commands[i] == ']' -> {/*ничего, limit учтён в looping*/}
             else -> throw IllegalArgumentException()
         }
         if (limit <= 0) break
