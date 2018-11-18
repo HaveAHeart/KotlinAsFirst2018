@@ -81,10 +81,10 @@ fun dateStrToDigit(str: String): String {
             (str[1] in "январямартамаяиюляавгустаоктябрядекабря" && str[0].toInt() !in 1..31) ||
             (str[1] in "апреляиюнясентябряноября" && str[0].toInt() !in 1..30) ||
             (str[1] == "февраля" &&
-                    (str[2].toInt() % 400 == 0 || (str[2].toInt() % 4 == 0 && str[2].toInt() % 100 != 0)) &&
-                    str[0].toInt() !in 1..29) ||
+                    (str[2].toInt() % 400 == 0 || (str[2].toInt() % 4 == 0 && str[2].toInt() % 100 != 0)
+                            || str[2].toInt() == 0) && str[0].toInt() !in 1..29) ||
             (str[1] == "февраля" && str[0].toInt() !in 1..28 &&
-                    (str[2].toInt() % 100 == 0 || str[2].toInt() % 4 != 0))
+                    (str[2].toInt() % 100 == 0 || str[2].toInt() % 4 != 0) && str[2].toInt() != 0)
     ) ""
     else twoDigitStr(str[0].toInt()) + "." + twoDigitStr(months.indexOf(str[1]) + 1) + "." + str[2]
 }
@@ -112,12 +112,11 @@ fun dateDigitToStr(digital: String): String {
             "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря")
     return if ((dig.size != 3 || dig[1] !in 1..12) ||
             (dig[1] in listOf(1, 3, 5, 7, 8, 10, 12) && dig[0] !in 1..31) ||
-            (dig[1] in listOf(4, 6, 9, 11) && dig[0] !in 1..30)
+            (dig[1] in listOf(4, 6, 9, 11) && dig[0] !in 1..30) ||
+            (dig[1] == 2 && (dig[2] % 400 == 0 || (dig[2] % 4 == 0 && dig[2] % 100 != 0) || dig[2] == 0)
+                    && dig[0] !in 1..29) ||
+            (dig[1] == 2 && dig[0] !in 1..28 && (dig[2] % 100 == 0 || dig[2] % 4 != 0) && dig[2] != 0)
     ) ""
-    else if ((dig[1] == 2 &&
-                    (dig[2] % 400 == 0 || (dig[2] % 4 == 0 && dig[2] % 100 != 0)) &&
-                    dig[0] !in 1..29)) ""
-    else if (dig[1] == 2 && dig[0] !in 1..28 && (dig[2] % 100 == 0 || dig[2] % 4 != 0)) ""
     else dig[0].toString() + " " + months[dig[1] - 1] + " " + dig[2]
 }
 
