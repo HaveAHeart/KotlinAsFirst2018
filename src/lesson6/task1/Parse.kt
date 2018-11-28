@@ -2,6 +2,7 @@
 
 package lesson6.task1
 
+import com.sun.org.apache.xpath.internal.operations.Bool
 import lesson5.task1.canBuildFrom
 import java.lang.NullPointerException
 
@@ -72,22 +73,26 @@ fun main(args: Array<String>) {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
+fun isLeap(year: Int): Boolean = year % 400 == 0 || (year % 4 == 0 && year % 100 != 0)
+
 fun dateStrToDigit(str: String): String {
     val str = str.split(" ")
     val months = listOf("января", "февраля", "марта", "апреля", "мая",
             "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря")
-    return if (
-            (str.size != 3 || str[1] !in months) ||
-            (str[1] in "январямартамаяиюляавгустаоктябрядекабря" && str[0].toInt() !in 1..31) ||
-            (str[1] in "апреляиюнясентябряноября" && str[0].toInt() !in 1..30) ||
-            (str[1] == "февраля" &&
-                    (str[2].toInt() % 400 == 0 || (str[2].toInt() % 4 == 0 && str[2].toInt() % 100 != 0)
-                            || str[2].toInt() == 0) && str[0].toInt() !in 1..29) ||
-            (str[1] == "февраля" && str[0].toInt() !in 1..28 &&
-                    ((str[2].toInt() % 100 == 0 && str[2].toInt() % 400 != 0) ||
-                            (str[2].toInt() % 4 != 0) && str[2].toInt() != 0))
-    ) ""
-    else twoDigitStr(str[0].toInt()) + "." + twoDigitStr(months.indexOf(str[1]) + 1) + "." + str[2]
+    if (str.size != 3 || str[1] !in months) return ""
+    try {
+        str[0].toInt()
+        str[2].toInt()
+    } catch (e: NumberFormatException) {
+        return ""
+    }
+    return when {
+        months.indexOf(str[1]) in listOf(0, 2, 4, 6, 7, 9, 11) && str[0].toInt() !in 1..31 -> ""
+        months.indexOf(str[1]) in listOf(3, 5, 8, 10) && str[0].toInt() !in 1..30 -> ""
+        isLeap(str[2].toInt()) && str[0].toInt() !in 1..29 -> ""
+        !isLeap(str[2].toInt()) && str[0].toInt() !in 1..28 -> ""
+        else -> twoDigitStr(str[0].toInt()) + "." + twoDigitStr(months.indexOf(str[1]) + 1) + "." + str[2]
+    }
 }
 
 /**
@@ -111,16 +116,14 @@ fun dateDigitToStr(digital: String): String {
     }
     val months = listOf("января", "февраля", "марта", "апреля", "мая",
             "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря")
-    return if ((dig.size != 3 || dig[1] !in 1..12) ||
-            (dig[1] in listOf(1, 3, 5, 7, 8, 10, 12) && dig[0] !in 1..31) ||
-            (dig[1] in listOf(4, 6, 9, 11) && dig[0] !in 1..30) ||
-            (dig[1] == 2 &&
-                    (((dig[2] % 400 == 0 || (dig[2] % 4 == 0 && dig[2] % 100 != 0) || dig[2] == 0)
-                            && dig[0] !in 1..29) ||
-                            (((dig[2] % 100 == 0 && dig[2] % 400 != 0) || dig[2] % 4 != 0) && dig[2] != 0 && dig[0] !in 1..28))
-                    )
-    ) ""
-    else dig[0].toString() + " " + months[dig[1] - 1] + " " + dig[2]
+    return when {
+        dig.size != 3 || dig[1] !in 1..12 -> ""
+        dig[1] in listOf(1, 3, 5, 7, 8, 10, 12) && dig[0] !in 1..31 -> ""
+        dig[1] in listOf(4, 6, 9, 11) && dig[0] !in 1..30 -> ""
+        isLeap(dig[2]) && dig[0] !in 1..29 -> ""
+        !isLeap(dig[2]) && dig[0] !in 1..28 -> ""
+        else -> dig[0].toString() + " " + months[dig[1] - 1] + " " + dig[2]
+    }
 }
 
 /**
@@ -136,31 +139,22 @@ fun dateDigitToStr(digital: String): String {
  * При неверном формате вернуть пустую строку
  */
 fun flattenPhoneNumber(phone: String): String {
-    val phone = phone.replace(" ", "").replace("-", "")
-    if ((phone.count { it == '(' } > 1 || phone.count { it == ')' } > 1 ||
-                    (phone.count { it == '(' } != phone.count { it == ')' })) ||
-            (phone.count { it == '+' } > 1) ||
-            ((phone.count { it == '+' } == 1) && phone[0] != '+')) return ""
-    val sb = StringBuilder()
-    var isOpen = false
-    for (i in phone) {
-        if (i == '+' && sb.isEmpty()) sb.append(i)
-        else if (i == '(') {
-            isOpen = true
-            continue
-        } else if (i == ')' && !isOpen &&
-                (phone.indexOf(')') - phone.indexOf('(') == 1)) return ""
-        else if (i == ')' && isOpen) continue
-        else {
-            try {
-                i.toString().toInt() //ну, я пытался :c
-            } catch (e: NumberFormatException) {
-                return ""
+    val phone = Regex("[ -]").replace(phone, "")
+    return if (Regex("^\\+[0-9]*\\([0-9]*\\)[0-9]*").matches(phone) ||
+            Regex("^\\+[0-9]*").matches(phone) ||
+            Regex("^[0-9]*\\([0-9]*\\)[0-9]*").matches(phone) ||
+            Regex("^[0-9]*").matches(phone)) {
+        val sb = StringBuilder()
+        for (i in phone) {
+            when (i) {
+                '+' -> sb.append(i)
+                '(', ')' -> {/*do nothing*/
+                }
+                else -> sb.append(i)
             }
-            sb.append(i)
         }
-    }
-    return sb.toString()
+        sb.toString()
+    } else ""
 }
 
 /**
@@ -175,13 +169,10 @@ fun flattenPhoneNumber(phone: String): String {
  */
 fun bestLongJump(jumps: String): Int {
     return try {
-        val list = jumps.split(" ").onEach { it ->
-            if (it == "-" || it == "%" || it == "") ""
-            else it.toInt()
-        }
+        val list = jumps.split(" ")
         var max = -1
         for (i in list) {
-            if (i != "-" && i != "%" && i != ""){
+            if (i != "-" && i != "%" && i != "") {
                 if (i.toInt() > max) max = i.toInt()
             }
         }
