@@ -116,10 +116,10 @@ fun dateDigitToStr(digital: String): String {
             "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря")
     return when {
         dig.size != 3 || dig[1] !in 1..12 -> ""
-        dig[1] - 1 in listOf(1, 3, 5, 7, 8, 10, 12) && dig[0] !in 1..31 -> ""
-        dig[1] - 1 in listOf(4, 6, 9, 11) && dig[0] !in 1..30 -> ""
-        dig[1] - 1 == 1 && isLeap(dig[2]) && dig[0] !in 1..29 -> ""
-        dig[1] - 1 == 1 && !isLeap(dig[2]) && dig[0] !in 1..28 -> ""
+        dig[1] in listOf(1, 3, 5, 7, 8, 10, 12) && dig[0] !in 1..31 -> ""
+        dig[1] in listOf(4, 6, 9, 11) && dig[0] !in 1..30 -> ""
+        dig[1] == 2 && isLeap(dig[2]) && dig[0] !in 1..29 -> ""
+        dig[1] == 2 && !isLeap(dig[2]) && dig[0] !in 1..28 -> ""
         else -> dig[0].toString() + " " + months[dig[1] - 1] + " " + dig[2]
     }
 }
