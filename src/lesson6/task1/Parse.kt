@@ -2,9 +2,7 @@
 
 package lesson6.task1
 
-import com.sun.org.apache.xpath.internal.operations.Bool
 import lesson5.task1.canBuildFrom
-import java.lang.NullPointerException
 
 /**
  * Пример
@@ -89,8 +87,8 @@ fun dateStrToDigit(str: String): String {
     return when {
         months.indexOf(str[1]) in listOf(0, 2, 4, 6, 7, 9, 11) && str[0].toInt() !in 1..31 -> ""
         months.indexOf(str[1]) in listOf(3, 5, 8, 10) && str[0].toInt() !in 1..30 -> ""
-        isLeap(str[2].toInt()) && str[0].toInt() !in 1..29 -> ""
-        !isLeap(str[2].toInt()) && str[0].toInt() !in 1..28 -> ""
+        months.indexOf(str[1]) == 1 && isLeap(str[2].toInt()) && str[0].toInt() !in 1..29 -> ""
+        months.indexOf(str[1]) == 1 && !isLeap(str[2].toInt()) && str[0].toInt() !in 1..28 -> ""
         else -> twoDigitStr(str[0].toInt()) + "." + twoDigitStr(months.indexOf(str[1]) + 1) + "." + str[2]
     }
 }
@@ -120,8 +118,8 @@ fun dateDigitToStr(digital: String): String {
         dig.size != 3 || dig[1] !in 1..12 -> ""
         dig[1] in listOf(1, 3, 5, 7, 8, 10, 12) && dig[0] !in 1..31 -> ""
         dig[1] in listOf(4, 6, 9, 11) && dig[0] !in 1..30 -> ""
-        isLeap(dig[2]) && dig[0] !in 1..29 -> ""
-        !isLeap(dig[2]) && dig[0] !in 1..28 -> ""
+        dig[1] == 1 && isLeap(dig[2]) && dig[0] !in 1..29 -> ""
+        dig[1] == 1 && !isLeap(dig[2]) && dig[0] !in 1..28 -> ""
         else -> dig[0].toString() + " " + months[dig[1] - 1] + " " + dig[2]
     }
 }
