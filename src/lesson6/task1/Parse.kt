@@ -138,23 +138,14 @@ fun dateDigitToStr(digital: String): String {
  */
 fun flattenPhoneNumber(phone: String): String {
     val phone = Regex("[ -]").replace(phone, "")
-    return if (Regex("^\\+[0-9]*\\([0-9]*\\)[0-9]*").matches(phone) ||
-            Regex("^\\+[0-9]*").matches(phone) ||
-            Regex("^[0-9]*\\([0-9]*\\)[0-9]*").matches(phone) ||
-            Regex("^[0-9]*").matches(phone)) {
+    return if (Regex("^\\+?[0-9]*(\\([0-9]*\\))?[0-9]*").matches(phone)) {
         val sb = StringBuilder()
         for (i in phone) {
-            when (i) {
-                '+' -> sb.append(i)
-                '(', ')' -> {/*do nothing*/
-                }
-                else -> sb.append(i)
-            }
+            if (i !in "()") sb.append(i)
         }
         sb.toString()
     } else ""
 }
-
 /**
  * Средняя
  *
@@ -251,21 +242,12 @@ fun firstDuplicateIndex(str: String): Int {
     var index = -1
     for (i in 1 until words.size) {
         if (words[i].toLowerCase() == words[i - 1].toLowerCase()) {
-            index = i - 1
+            index = Regex("${words[i - 1]} ${words[i]}")
+                    .find(str, 0)!!.range.first
             break
         }
     }
-    return when (index) {
-        -1 -> -1
-        0 -> 0
-        else -> {
-            var length = 0
-            for (i in 0 until index) {
-                length += words[i].length
-            }
-            length + index
-        }
-    }
+    return index
 }
 
 /**
