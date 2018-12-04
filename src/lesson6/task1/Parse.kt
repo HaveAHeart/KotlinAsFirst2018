@@ -239,15 +239,14 @@ fun plusMinus(expr: String): Int {
  */
 fun firstDuplicateIndex(str: String): Int {
     val words = str.split(" ")
-    var index = -1
+    var index = 0
     for (i in 1 until words.size) {
         if (words[i].toLowerCase() == words[i - 1].toLowerCase()) {
-            index = Regex("${words[i - 1]} ${words[i]}")
-                    .find(str, 0)!!.range.first
-            break
+            return index
         }
+        index += words[i - 1].length + 1
     }
-    return index
+    return -1
 }
 
 /**
