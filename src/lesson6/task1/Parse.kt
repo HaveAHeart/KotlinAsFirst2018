@@ -146,6 +146,7 @@ fun flattenPhoneNumber(phone: String): String {
         sb.toString()
     } else ""
 }
+
 /**
  * Средняя
  *
