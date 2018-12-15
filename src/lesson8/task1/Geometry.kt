@@ -253,6 +253,7 @@ fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
     println(center)
     println(radius)
     return Circle(center, radius)
+
 }
 
 /**
