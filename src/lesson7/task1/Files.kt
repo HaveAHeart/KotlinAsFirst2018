@@ -286,9 +286,8 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
         val sb = StringBuilder()
         for (ch in str) {
             val add = dict.getOrDefault(ch.toLowerCase(), ch.toString())
-            if (ch == ch.toUpperCase()) {
-                sb.append(add[0].toUpperCase())
-                for (i in 1 until add.length) sb.append(add[i].toLowerCase())
+            if (ch == ch.toUpperCase() && ch.toUpperCase() != ch.toLowerCase()) {
+                sb.append(add.capitalize())
             } else {
                 sb.append(dict.getOrDefault(ch, ch.toString()).toLowerCase())
             }
@@ -324,17 +323,17 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun chooseLongestChaoticWord(inputName: String, outputName: String) {
-    var max = ""
+    var max = "" to 0
     for (i in File(inputName).readLines()) {
         if (i.toLowerCase().toSet().size == i.length) {
             when {
-                i.length > max.length -> max = i
-                i.length == max.length -> max = "$max, $i"
+                i.length > max.second -> max = i to i.length
+                i.length == max.second -> max = max.first + ", $i" to max.second
             }
         }
     }
     val outputStream = File(outputName).bufferedWriter()
-    outputStream.write(max)
+    outputStream.write(max.first)
     outputStream.close()
 }
 
@@ -381,7 +380,7 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  *
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
-fun findMarkUpBody(list: MutableList<String>, start: Int): MutableList<String> {
+fun findMarkUpBody(list: MutableList<String>, start: Int): MutableList<String> { //for further use in impossible
     val unList = Regex("\\*.*")
     val numList = Regex("\\d+\\..*")
     val markUpList = mutableListOf<String>()
@@ -389,16 +388,15 @@ fun findMarkUpBody(list: MutableList<String>, start: Int): MutableList<String> {
         if (!list[i].matches(unList) && !list[i].matches(numList)) markUpList.add(list[i]) else break
     return markUpList
 }
+
 fun markUp(list: MutableList<String>): String { //for further use in impossible
     val sb = StringBuilder("<p>\n")
+    var iOpened = false
+    var bOpened = false
+    var sOpened = false
     for (i in list) {
-        if (i.isEmpty()) {
-            sb.append("</p>\n<p>")
-        }
+        if (i.isEmpty()) sb.append("</p>\n\n<p>")
         var index = 0
-        var iOpened = false
-        var bOpened = false
-        var sOpened = false
         while (index < i.length - 1) {
             when {
                 i[index] == '*' && i[index + 1] == '*' -> {

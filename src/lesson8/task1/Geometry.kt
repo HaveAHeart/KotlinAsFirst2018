@@ -3,6 +3,7 @@
 package lesson8.task1
 
 import lesson1.task1.sqr
+import kotlin.Double.Companion.POSITIVE_INFINITY
 import kotlin.math.*
 
 /**
@@ -183,10 +184,16 @@ class Line private constructor(val b: Double, val angle: Double) {
  *
  * Построить прямую по отрезку
  */
+fun correctAngle(angle: Double): Double {
+    var corAngle = angle % PI
+    if (corAngle < 0) corAngle += PI
+    return if (corAngle == PI) 0.0 else corAngle
+}
+
 fun lineBySegment(s: Segment): Line {
     val yLength = abs(s.begin.y - s.end.y)
-    val hypotenuse = s.length()
-    val angle = asin(yLength / hypotenuse)
+    val xLength = abs(s.begin.x - s.end.x)
+    val angle = correctAngle(atan(yLength / xLength))
     return Line(s.begin, angle)
 }
 
@@ -205,11 +212,11 @@ fun lineByPoints(a: Point, b: Point): Line = lineBySegment(Segment(a, b))
  */
 fun bisectorByPoints(a: Point, b: Point): Line {
     val s = Segment(a, b)
-    val yLength = abs(s.begin.y - s.end.y)
-    val hypotenuse = s.length()
     val center = s.center()
-    val angle = asin(yLength / hypotenuse) + (PI / 2.0)
-    return if (angle >= PI) Line(center, angle - PI) else Line(center, angle)
+    val yLength = abs(s.begin.y - s.end.y)
+    val xLength = abs(s.begin.x - s.end.x)
+    val angle = correctAngle(atan(yLength / xLength) + PI / 2.0)
+    return Line(center, angle)
 }
 
 /**
@@ -220,14 +227,14 @@ fun bisectorByPoints(a: Point, b: Point): Line {
  */
 fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> {
     if (circles.size < 2) throw IllegalArgumentException()
-    var distance = circles[0].center.distance(circles[1].center) - circles[0].radius - circles[1].radius
+    var distance = POSITIVE_INFINITY
     var nearest = circles[0] to circles[1]
     for (i1 in 0 until circles.size) {
         for (i2 in i1 + 1 until circles.size) {
             val c1 = circles[i1]
             val c2 = circles[i2]
-            val curDistance = c1.center.distance(c2.center) - c1.radius - c2.radius
-            if (curDistance < distance && curDistance > 0) {
+            val curDistance = c1.distance(c2)
+            if (curDistance < distance) {
                 nearest = c1 to c2
                 distance = curDistance
             }
@@ -250,10 +257,7 @@ fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
     val bisectBC = bisectorByPoints(b, c)
     val center = bisectAB.crossPoint(bisectBC)
     val radius = a.distance(center)
-    println(center)
-    println(radius)
     return Circle(center, radius)
-
 }
 
 /**
