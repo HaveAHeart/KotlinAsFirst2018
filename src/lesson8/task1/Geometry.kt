@@ -10,6 +10,9 @@ import kotlin.math.*
  * Точка на плоскости
  */
 data class Point(val x: Double, val y: Double) {
+
+    fun center(other: Point): Point = Point(((x + other.x) / 2), (y + other.y) / 2)
+
     /**
      * Пример
      *
@@ -211,11 +214,10 @@ fun lineByPoints(a: Point, b: Point): Line = lineBySegment(Segment(a, b))
  * Построить серединный перпендикуляр по отрезку или по двум точкам
  */
 fun bisectorByPoints(a: Point, b: Point): Line {
-    val s = Segment(a, b)
-    val center = s.center()
-    val yLength = abs(a.y - b.y)
-    val xLength = abs(a.x - b.x)
-    val angle = correctAngle(atan(xLength / yLength))
+    val center = a.center(b)
+    val yLength = b.y - a.y
+    val xLength = b.x - a.x
+    val angle = if (yLength == 0.0) PI / 2 else correctAngle(atan(xLength / yLength))
     return Line(center, angle)
 }
 
