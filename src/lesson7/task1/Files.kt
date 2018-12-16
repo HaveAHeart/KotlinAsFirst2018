@@ -279,20 +279,19 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
     val dict = mutableMapOf<Char, String>()
     dictionary.forEach { dict[it.key.toLowerCase()] = it.value.toLowerCase() }
     val outputStream = File(outputName).bufferedWriter()
-    for (str in File(inputName).readLines()) {
-        val sb = StringBuilder()
-        for (ch in str) {
-            val add = dict.getOrDefault(ch.toLowerCase(), ch.toString())
-            if (ch == ch.toUpperCase() && ch.toUpperCase() != ch.toLowerCase()) {
-                sb.append(add.capitalize())
-            } else {
-                sb.append(dict.getOrDefault(ch, ch.toString()).toLowerCase())
-            }
+    var sb = StringBuilder()
+    for (i in File(inputName).readLines()) sb.append(i + '\n')
+    val text = sb.removeSuffix("\n").toString()
+    sb = StringBuilder()
+    for (ch in text) {
+        val add = dict.getOrDefault(ch.toLowerCase(), ch.toString())
+        if (ch == ch.toUpperCase() && ch.toUpperCase() != ch.toLowerCase()) {
+            sb.append(add.capitalize())
+        } else {
+            sb.append(dict.getOrDefault(ch, ch.toString()).toLowerCase())
         }
-        sb.append(dict.getOrDefault('\n', ""))
-        outputStream.write(sb.toString())
-        outputStream.newLine()
     }
+    outputStream.write(sb.toString())
     outputStream.close()
 }
 
