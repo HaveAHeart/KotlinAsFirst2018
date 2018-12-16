@@ -191,8 +191,8 @@ fun correctAngle(angle: Double): Double {
 }
 
 fun lineBySegment(s: Segment): Line {
-    val yLength = abs(s.begin.y - s.end.y)
-    val xLength = abs(s.begin.x - s.end.x)
+    val yLength = s.begin.y - s.end.y
+    val xLength = s.begin.x - s.end.x
     val angle = correctAngle(atan(yLength / xLength))
     return Line(s.begin, angle)
 }
@@ -213,9 +213,9 @@ fun lineByPoints(a: Point, b: Point): Line = lineBySegment(Segment(a, b))
 fun bisectorByPoints(a: Point, b: Point): Line {
     val s = Segment(a, b)
     val center = s.center()
-    val yLength = abs(s.begin.y - s.end.y)
-    val xLength = abs(s.begin.x - s.end.x)
-    val angle = correctAngle(atan(yLength / xLength) + PI / 2.0)
+    val yLength = abs(a.y - b.y)
+    val xLength = abs(a.x - b.x)
+    val angle = correctAngle(atan(xLength / yLength))
     return Line(center, angle)
 }
 

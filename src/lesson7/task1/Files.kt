@@ -55,11 +55,8 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  *
  */
 fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
-
     val sb = StringBuilder()
-    for (i in File(inputName).readLines()) {
-        sb.append(i.toLowerCase())
-    }
+    for (i in File(inputName).readLines()) sb.append(i.toLowerCase() + "\n")
     val text = sb.toString()
     val answ = mutableMapOf<String, Int>()
     for (i in substrings) {
@@ -181,7 +178,7 @@ fun alignFileByWidth(inputName: String, outputName: String) {
     var maxLen = 0
     for (i in 0 until input.size) {
         input[i] = input[i].trim()
-        Regex("\\s.*").replace(input[i], " ")
+        Regex(".*\\s.*").replace(input[i], " ")
         maxLen = maxOf(maxLen, input[i].length)
     }
     val outputStream = File(outputName).bufferedWriter()
@@ -292,6 +289,7 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
                 sb.append(dict.getOrDefault(ch, ch.toString()).toLowerCase())
             }
         }
+        sb.append(dict.getOrDefault('\n', ""))
         outputStream.write(sb.toString())
         outputStream.newLine()
     }
