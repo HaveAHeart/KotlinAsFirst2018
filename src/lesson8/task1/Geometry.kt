@@ -214,11 +214,9 @@ fun lineByPoints(a: Point, b: Point): Line = lineBySegment(Segment(a, b))
  * Построить серединный перпендикуляр по отрезку или по двум точкам
  */
 fun bisectorByPoints(a: Point, b: Point): Line {
-    val center = a.center(b)
-    val yLength = b.y - a.y
-    val xLength = b.x - a.x
-    val angle = if (yLength == 0.0) PI / 2 else correctAngle(atan(xLength / yLength))
-    return Line(center, angle)
+    val angle = if (a.y == b.y) PI / 2.0
+    else correctAngle(atan((b.x - a.x) / (a.y - b.y)))
+    return Line(a.center(b), angle)
 }
 
 /**
@@ -255,9 +253,7 @@ fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> {
  * построить окружность, описанную вокруг треугольника - эквивалентная задача).
  */
 fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
-    val bisectAB = bisectorByPoints(a, b)
-    val bisectBC = bisectorByPoints(b, c)
-    val center = bisectAB.crossPoint(bisectBC)
+    val center = bisectorByPoints(a, b).crossPoint(bisectorByPoints(b, c))
     val radius = a.distance(center)
     return Circle(center, radius)
 }
