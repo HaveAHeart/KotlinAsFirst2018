@@ -51,7 +51,7 @@ class Tests {
 
     private fun approxEquals(expected: Line, actual: Line, delta: Double): Boolean =
             abs(expected.angle - actual.angle) <= delta &&
-            abs(expected.b - actual.b) <= delta
+                    abs(expected.b - actual.b) <= delta
 
     private fun assertApproxEquals(expected: Line, actual: Line, delta: Double = ulp(10.0)) {
         assertTrue(approxEquals(expected, actual, delta))
@@ -216,5 +216,11 @@ class Tests {
         for (p in listOf(p1, p2, p3, p4, p5, p6)) {
             assertTrue(result.contains(p))
         }
+    }
+
+    @Test
+    fun comission() {
+        val str1 = "а б - Мат 50, Рус 60, Инф 70"
+        assertEquals(listOf("а б"), comission(str1, 150, listOf("Рус", "Мат", "Инф")))
     }
 }

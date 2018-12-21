@@ -271,3 +271,37 @@ fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
  */
 fun minContainingCircle(vararg points: Point): Circle = TODO()
 
+fun comission(examResults: String, treshold: Int, required: List<String>): List<String> {
+    val pass = mutableListOf<String>()
+    var allExams: Boolean
+    var sum: Int
+    var temp: List<String>
+    var name: String
+    var marks: MutableMap<String, Int>
+    var examMark: List<String>
+    for (str in examResults.split("\n")) {
+        temp = Regex(".* *- *.*").split(str)
+        if (temp.size != 2) throw IllegalArgumentException("format incorrect: $str")
+        marks = mutableMapOf() //обнуляем карту экзамен-оценка и сумму баллов
+        sum = 0
+        name = temp[0]
+        if (!name.matches(Regex("\\w* \\w*")))
+            throw IllegalArgumentException("name incorrect: $name")
+        examMark = temp[1].split(Regex(","))
+        for (pair in examMark) {
+            if (!pair.matches(Regex("\\w* *100|\\d\\d|\\d")))
+                throw IllegalArgumentException("exam pair incorrect $pair")
+            marks[pair.split(Regex(" *"))[0]] = pair.split(Regex(" *"))[1].toInt()
+        }
+        allExams = true
+        for (exam in required) { //считаем сумму баллов по нужным экзаменам
+            if (marks[exam] != null) sum += marks[exam]!!
+            else {
+                allExams = false
+                break
+            }
+        }
+        if (sum >= treshold && allExams) pass.add(name)
+    }
+    return pass
+}

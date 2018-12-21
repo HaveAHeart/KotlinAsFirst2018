@@ -55,16 +55,9 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  *
  */
 fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
-    val sb = StringBuilder()
-    for (i in File(inputName).readLines()) sb.append(i.toLowerCase() + "\n")
-    val text = sb.toString()
+    val text = File(inputName).readText().toLowerCase()
     val answ = mutableMapOf<String, Int>()
-    for (i in substrings) {
-        answ[i] = 0
-        for (c in Regex(i.toLowerCase()).findAll(text, 0)) {
-            answ[i] = answ[i]!! + 1
-        }
-    }
+    for (i in substrings) answ[i] = Regex(i.toLowerCase()).findAll(text, 0).count()
     return answ
 
 }
@@ -132,11 +125,10 @@ fun sibilants(inputName: String, outputName: String) {
  */
 fun centerFile(inputName: String, outputName: String) {
     var maxLen = 0
-    for (i in File(inputName).readLines()) {
-        maxLen = maxOf(maxLen, i.trim().length)
-    }
     val outputStream = File(outputName).bufferedWriter()
-    for (i in File(inputName).readLines()) {
+    val text = File(inputName).readLines()
+    for (i in text) maxLen = maxOf(maxLen, i.trim().length)
+    for (i in text) {
         val out = StringBuilder()
         for (c in 0 until (maxLen - i.trim().length) / 2) out.append(' ')
         out.append(i.trim())
@@ -178,7 +170,7 @@ fun alignFileByWidth(inputName: String, outputName: String) {
     var maxLen = 0
     for (i in 0 until input.size) {
         input[i] = input[i].trim()
-        Regex(".* *.*").replace(input[i], " ")
+        input[i] = Regex(".* *.*").replace(input[i], " ")
         maxLen = maxOf(maxLen, input[i].length)
     }
     val outputStream = File(outputName).bufferedWriter()
@@ -192,8 +184,7 @@ fun alignFileByWidth(inputName: String, outputName: String) {
         val out = StringBuilder()
         out.append(i[0])
         for (c in 1 until i.size) {
-            out.append(" ") //потерянный при split'е пробел
-            for (count in 0 until (addLen / (i.size - 1))) out.append(" ")
+            out.append(" ".repeat(addLen / (i.size - 1) + 1))
             if (c <= addLen % (i.size - 1)) out.append(" ")
             out.append(i[c])
         }
@@ -279,16 +270,14 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
     val dict = mutableMapOf<Char, String>()
     dictionary.forEach { dict[it.key.toLowerCase()] = it.value.toLowerCase() }
     val outputStream = File(outputName).bufferedWriter()
-    var sb = StringBuilder()
-    for (i in File(inputName).readLines()) sb.append(i + '\n')
-    val text = sb.removeSuffix("\n").toString()
-    sb = StringBuilder()
+    val text = File(inputName).readText()
+    val sb = StringBuilder()
     for (ch in text) {
         val add = dict.getOrDefault(ch.toLowerCase(), ch.toString())
-        if (ch == ch.toUpperCase() && ch.toUpperCase() != ch.toLowerCase()) {
+        if (ch.isUpperCase()) {
             sb.append(add.capitalize())
         } else {
-            sb.append(dict.getOrDefault(ch, ch.toString()).toLowerCase())
+            sb.append(dict.getOrDefault(ch, ch.toString()))
         }
     }
     outputStream.write(sb.toString())
@@ -325,7 +314,7 @@ fun chooseLongestChaoticWord(inputName: String, outputName: String) {
         if (i.toLowerCase().toSet().size == i.length) {
             when {
                 i.length > max.second -> max = i to i.length
-                i.length == max.second -> max = max.first + ", $i" to max.second
+                i.length == max.second -> max = "${max.first}, $i" to max.second
             }
         }
     }
