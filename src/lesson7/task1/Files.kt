@@ -3,7 +3,6 @@
 package lesson7.task1
 
 import java.io.File
-import kotlin.math.min
 
 /**
  * Пример
@@ -221,14 +220,7 @@ fun top20Words(inputName: String): Map<String, Int> {
             dict[currKey] = dict.getOrDefault(currKey, 0) + 1
         }
     }
-    if (dict.keys.size == 0) return emptyMap()
-    val answ = mutableMapOf<String, Int>()
-    for (i in 0 until min(20, dict.keys.size)) {
-        val max = dict.maxBy { it.value }!!
-        answ[max.key] = max.value
-        dict.remove(max.key)
-    }
-    return answ
+    return dict.toList().sortedByDescending { it.second }.take(20).toMap()
 }
 
 /**
