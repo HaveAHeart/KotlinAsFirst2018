@@ -169,7 +169,7 @@ fun alignFileByWidth(inputName: String, outputName: String) {
     var maxLen = 0
     for (i in 0 until input.size) {
         input[i] = input[i].trim()
-        input[i] = Regex(".* *.*").replace(input[i], " ")
+        input[i] = Regex(" *").replace(input[i], " ")
         maxLen = maxOf(maxLen, input[i].length)
     }
     val outputStream = File(outputName).bufferedWriter()
